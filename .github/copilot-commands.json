@@ -1,0 +1,325 @@
+{
+  "commands": {
+    "generate-easy": {
+      "description": "Generate an easy puzzle using backwards-shuffle algorithm",
+      "agent": "@puzzle-generator",
+      "prompt": "Generate an Easy difficulty puzzle using the backwards-shuffle algorithm. Use the configuration from src/data/difficulty.ts for Easy settings (grid 4x5 to 5x5, 3-8 moves target). Validate that the generated puzzle is solvable and within the target move range.",
+      "parameters": {
+        "gridSize": {
+          "type": "string",
+          "description": "Optional: Override grid size (e.g., '5x5')",
+          "required": false
+        }
+      }
+    },
+    "generate-medium": {
+      "description": "Generate a medium puzzle using iterative deepening algorithm",
+      "agent": "@puzzle-generator",
+      "prompt": "Generate a Medium difficulty puzzle using the iterative deepening algorithm from src/logic/iterativeGenerator.ts. Target 12-20 moves on a 5x7 to 7x7 grid. The algorithm should place the player far from goal, then iteratively add obstacles that increase move count until target is reached.",
+      "parameters": {
+        "targetMoves": {
+          "type": "number",
+          "description": "Optional: Specific target move count within 12-20 range",
+          "required": false
+        }
+      }
+    },
+    "generate-hard": {
+      "description": "Generate a hard puzzle (current approach, Phase 2 will improve)",
+      "agent": "@puzzle-generator",
+      "prompt": "Generate a Hard difficulty puzzle using the current approach (backwards-shuffle). Target 15-35 moves on a 7x9 to 9x9 grid. Note: This has low success rate (<5%) and Phase 2 will implement constraint satisfaction for better results.",
+      "parameters": {}
+    },
+    "generate-batch": {
+      "description": "Generate multiple puzzles for testing",
+      "agent": "@puzzle-generator",
+      "prompt": "Generate a batch of puzzles for testing purposes. Create multiple puzzles of the specified difficulty level and report statistics on success rates, move counts, and generation times.",
+      "parameters": {
+        "difficulty": {
+          "type": "string",
+          "description": "Difficulty level: Easy, Medium, or Hard",
+          "required": true
+        },
+        "count": {
+          "type": "number",
+          "description": "Number of puzzles to generate",
+          "required": true
+        }
+      }
+    },
+    "test-generator": {
+      "description": "Run test suite for a specific difficulty level",
+      "agent": "@testing-validation",
+      "prompt": "Run comprehensive tests for the specified difficulty level. Execute the test suite, measure success rates, generation times, and validate that puzzles meet quality standards. Report detailed statistics.",
+      "parameters": {
+        "difficulty": {
+          "type": "string",
+          "description": "Difficulty level to test: Easy, Medium, or Hard",
+          "required": true
+        },
+        "iterations": {
+          "type": "number",
+          "description": "Number of test iterations (default: 50)",
+          "required": false
+        }
+      }
+    },
+    "test-all-difficulties": {
+      "description": "Run comprehensive tests across all difficulty levels",
+      "agent": "@testing-validation",
+      "prompt": "Run comprehensive tests for all difficulty levels (Easy, Medium, Hard). Generate multiple puzzles for each difficulty, measure success rates, generation times, and validate quality. Compare results against target metrics from PHASE1_IMPLEMENTATION.md (Easy: 40-60%, Medium: 70-85%, Hard: <5%).",
+      "parameters": {}
+    },
+    "analyze-generation": {
+      "description": "Analyze generation logs and calculate success rates",
+      "agent": "@testing-validation",
+      "prompt": "Analyze puzzle generation logs and calculate comprehensive statistics. Report success rates by difficulty, average generation times, move count distributions, and identify any patterns in failures. Compare against target metrics.",
+      "parameters": {
+        "logFile": {
+          "type": "string",
+          "description": "Optional: Path to specific log file to analyze",
+          "required": false
+        }
+      }
+    },
+    "benchmark-performance": {
+      "description": "Measure generation speed and efficiency",
+      "agent": "@testing-validation",
+      "prompt": "Run performance benchmarks on puzzle generation. Measure generation speed, solver call counts, memory usage, and efficiency for each difficulty level. Identify optimization opportunities.",
+      "parameters": {}
+    },
+    "add-constraint-algorithm": {
+      "description": "Start implementing Phase 2 constraint satisfaction algorithm",
+      "agent": "@phase2-implementation",
+      "prompt": "Begin implementing the Phase 2 constraint satisfaction algorithm for Hard difficulty puzzles as described in ALTERNATIVE_ALGORITHMS.md. Create a new generator file that builds puzzles forward with explicit move count constraints. The algorithm should place vehicles one at a time while maintaining solvability and targeting 80-95% success rate.",
+      "parameters": {}
+    },
+    "optimize-obstacle-placement": {
+      "description": "Improve obstacle placement logic for better puzzle quality",
+      "agent": "@puzzle-generator",
+      "prompt": "Optimize the obstacle placement logic in the puzzle generators. Analyze current placement strategies and improve them to create more interesting puzzles with better variety while maintaining target difficulty levels.",
+      "parameters": {
+        "generator": {
+          "type": "string",
+          "description": "Which generator to optimize: iterative, hybrid, or pattern",
+          "required": true
+        }
+      }
+    },
+    "refactor-generator": {
+      "description": "Refactor existing generator code for better maintainability",
+      "agent": "@puzzle-generator",
+      "prompt": "Refactor the specified generator code to improve maintainability, readability, and testability. Extract common logic, improve naming, add documentation, and ensure code follows best practices.",
+      "parameters": {
+        "file": {
+          "type": "string",
+          "description": "Generator file to refactor (e.g., hybridGenerator.ts)",
+          "required": true
+        }
+      }
+    },
+    "add-generator-feature": {
+      "description": "Add a new feature to the generator system",
+      "agent": "@puzzle-generator",
+      "prompt": "Add a new feature to the puzzle generator system. Implement the feature following existing patterns, ensure it integrates with the hybrid generator architecture, and add appropriate tests.",
+      "parameters": {
+        "feature": {
+          "type": "string",
+          "description": "Description of the feature to add",
+          "required": true
+        }
+      }
+    },
+    "debug-generation-failure": {
+      "description": "Debug why a puzzle generation failed",
+      "agent": "@puzzle-generator",
+      "prompt": "Debug a puzzle generation failure. Analyze the generation logs, identify why the puzzle failed to generate (unsolvable, wrong difficulty, timeout, etc.), and suggest fixes. Trace through the generation algorithm step by step.",
+      "parameters": {
+        "difficulty": {
+          "type": "string",
+          "description": "Difficulty level that failed",
+          "required": false
+        },
+        "context": {
+          "type": "string",
+          "description": "Additional context about the failure",
+          "required": false
+        }
+      }
+    },
+    "validate-solver-integration": {
+      "description": "Ensure solver is correctly integrated with generators",
+      "agent": "@solver-integration",
+      "prompt": "Validate that the solver is correctly integrated with all puzzle generators. Check that move counts are accurate, puzzles are verified as solvable, and the solver is being called efficiently. Identify any integration issues or optimization opportunities.",
+      "parameters": {}
+    },
+    "analyze-puzzle-quality": {
+      "description": "Analyze if generated puzzles meet quality standards",
+      "agent": "@testing-validation",
+      "prompt": "Analyze the quality of generated puzzles. Check for variety, interesting move sequences, appropriate difficulty progression, and player experience factors. Compare against quality standards and suggest improvements.",
+      "parameters": {
+        "difficulty": {
+          "type": "string",
+          "description": "Difficulty level to analyze",
+          "required": false
+        }
+      }
+    },
+    "trace-generation-steps": {
+      "description": "Trace through generation algorithm step by step",
+      "agent": "@puzzle-generator",
+      "prompt": "Add detailed logging and trace through the puzzle generation algorithm step by step. Show the state at each iteration, decisions made, obstacles added, and move count changes. Useful for understanding and debugging the generation process.",
+      "parameters": {
+        "difficulty": {
+          "type": "string",
+          "description": "Difficulty level to trace",
+          "required": true
+        }
+      }
+    },
+    "update-generator-guide": {
+      "description": "Update GENERATOR_GUIDE.md with latest statistics and approaches",
+      "agent": "@testing-validation",
+      "prompt": "Update the GENERATOR_GUIDE.md documentation with the latest generation statistics, success rates, and approach descriptions. Ensure all metrics are current and accurately reflect the Phase 1 implementation results.",
+      "parameters": {}
+    },
+    "document-algorithm": {
+      "description": "Document a new algorithm approach in detail",
+      "agent": "@puzzle-generator",
+      "prompt": "Document a new puzzle generation algorithm in detail. Include algorithm description, pseudocode, advantages/disadvantages, expected success rates, and integration guidance. Follow the format used in ALTERNATIVE_ALGORITHMS.md.",
+      "parameters": {
+        "algorithm": {
+          "type": "string",
+          "description": "Name of the algorithm to document",
+          "required": true
+        }
+      }
+    },
+    "update-phase-docs": {
+      "description": "Update phase implementation documentation",
+      "agent": "@phase2-implementation",
+      "prompt": "Update the phase implementation documentation (PHASE1_IMPLEMENTATION.md or future phase docs). Document progress, results, metrics, and next steps. Ensure documentation accurately reflects the current state of implementation.",
+      "parameters": {
+        "phase": {
+          "type": "string",
+          "description": "Phase number (1 or 2)",
+          "required": true
+        }
+      }
+    },
+    "generate-metrics-report": {
+      "description": "Generate a report of current generation metrics",
+      "agent": "@testing-validation",
+      "prompt": "Generate a comprehensive metrics report for puzzle generation. Include success rates by difficulty, generation times, move count distributions, solver performance, and quality metrics. Compare current results against targets from PHASE1_IMPLEMENTATION.md.",
+      "parameters": {
+        "format": {
+          "type": "string",
+          "description": "Report format: markdown or json",
+          "required": false
+        }
+      }
+    },
+    "phase2-status": {
+      "description": "Check Phase 2 implementation status and next steps",
+      "agent": "@phase2-implementation",
+      "prompt": "Check the current status of Phase 2 implementation. Review what's been completed, what remains, and provide a clear roadmap for next steps. Reference the Phase 2 plan from ALTERNATIVE_ALGORITHMS.md and suggest priorities.",
+      "parameters": {}
+    },
+    "design-constraint-system": {
+      "description": "Design the constraint satisfaction system for Phase 2",
+      "agent": "@phase2-implementation",
+      "prompt": "Design the constraint satisfaction system for Phase 2 Hard puzzle generation. Create a detailed design document covering: constraint types, propagation logic, forward-building approach, dependency chain creation, and integration with existing architecture. Target 80-95% success rate.",
+      "parameters": {}
+    },
+    "implement-forward-builder": {
+      "description": "Implement forward-building with constraints",
+      "agent": "@phase2-implementation",
+      "prompt": "Implement the forward-building puzzle generator with constraint satisfaction for Phase 2. Build puzzles from an empty grid, placing vehicles one at a time while maintaining move count constraints and ensuring solvability. Follow the approach described in ALTERNATIVE_ALGORITHMS.md.",
+      "parameters": {}
+    },
+    "test-hard-generation": {
+      "description": "Specifically test and validate hard puzzle generation",
+      "agent": "@testing-validation",
+      "prompt": "Run comprehensive tests specifically for Hard difficulty puzzle generation. Generate multiple Hard puzzles, measure success rates, validate they're in the 15-35 move range, and analyze what makes them succeed or fail. Compare Phase 1 baseline with any Phase 2 improvements.",
+      "parameters": {
+        "iterations": {
+          "type": "number",
+          "description": "Number of test iterations (default: 100)",
+          "required": false
+        }
+      }
+    },
+    "implement-game-feature": {
+      "description": "Add a new gameplay feature or UI enhancement",
+      "agent": "@gameplay-ui",
+      "prompt": "Implement a new gameplay feature or UI enhancement. Consider user experience, game state management, React best practices, and integration with existing components. Ensure the feature works smoothly with vehicle movement and game logic.",
+      "parameters": {
+        "feature": {
+          "type": "string",
+          "description": "Description of the gameplay feature to implement",
+          "required": true
+        }
+      }
+    },
+    "fix-game-bug": {
+      "description": "Debug and fix a gameplay or UI bug",
+      "agent": "@gameplay-ui",
+      "prompt": "Debug and fix a gameplay or UI bug. Analyze the game state, component interactions, and movement logic to identify the root cause. Ensure the fix doesn't break existing functionality.",
+      "parameters": {
+        "bug": {
+          "type": "string",
+          "description": "Description of the bug to fix",
+          "required": true
+        }
+      }
+    },
+    "improve-game-controls": {
+      "description": "Enhance player controls and input handling",
+      "agent": "@gameplay-ui",
+      "prompt": "Improve player controls and input handling. Consider touch gestures, keyboard shortcuts, drag-and-drop improvements, and overall responsiveness. Ensure controls feel intuitive and smooth.",
+      "parameters": {}
+    },
+    "add-game-animation": {
+      "description": "Add animations or visual effects to enhance gameplay",
+      "agent": "@gameplay-ui",
+      "prompt": "Add animations or visual effects to enhance the gameplay experience. Use framer-motion or CSS animations. Consider victory animations, move feedback, hints, and smooth transitions between states.",
+      "parameters": {
+        "animation": {
+          "type": "string",
+          "description": "Description of the animation to add",
+          "required": true
+        }
+      }
+    },
+    "optimize-game-performance": {
+      "description": "Optimize gameplay rendering and performance",
+      "agent": "@gameplay-ui",
+      "prompt": "Optimize gameplay rendering and performance. Profile React components, reduce unnecessary re-renders, optimize state updates, and improve overall game responsiveness. Focus on smooth 60fps gameplay.",
+      "parameters": {}
+    },
+    "redesign-game-ui": {
+      "description": "Redesign or improve game UI components",
+      "agent": "@gameplay-ui",
+      "prompt": "Redesign or improve game UI components. Consider visual hierarchy, color schemes, spacing, typography, and overall aesthetics. Ensure the design is consistent with the game's theme and improves user experience.",
+      "parameters": {
+        "component": {
+          "type": "string",
+          "description": "Component to redesign (e.g., GameBoard, LevelSelector)",
+          "required": false
+        }
+      }
+    },
+    "test-gameplay": {
+      "description": "Test gameplay mechanics and user interactions",
+      "agent": "@gameplay-ui",
+      "prompt": "Test gameplay mechanics and user interactions. Verify vehicle movement, collision detection, win conditions, undo/reset functionality, and level transitions. Identify edge cases and usability issues.",
+      "parameters": {}
+    },
+    "add-game-hint-system": {
+      "description": "Implement or improve the hint system",
+      "agent": "@gameplay-ui",
+      "prompt": "Implement or improve the hint system for helping players solve puzzles. Integrate with the solver to suggest optimal moves. Provide visual feedback showing which vehicle to move and in what direction.",
+      "parameters": {}
+    }
+  }
+}
